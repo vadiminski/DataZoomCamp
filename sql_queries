@@ -1,0 +1,51 @@
+Q3
+SELECT
+	CAST(lpep_pickup_datetime as DATE) as "day",
+	COUNT(*)
+FROM
+	green_taxi_data
+WHERE
+	CAST(lpep_pickup_datetime as DATE) = '2019-01-15'
+GROUP BY 
+	CAST(lpep_pickup_datetime as DATE);
+Q4
+SELECT
+	CAST(lpep_pickup_datetime as DATE) as "day",
+	trip_distance
+FROM
+	green_taxi_data
+ORDER BY
+	trip_distance desc;
+Q5
+SELECT
+	CAST(lpep_pickup_datetime as DATE) as "day",
+	passenger_count, 
+	count(*)
+FROM
+	green_taxi_data
+WHERE 
+	CAST(lpep_pickup_datetime as DATE) = '2019-01-01'
+AND
+	(passenger_count = 3
+OR 
+	passenger_count = 2)
+GROUP BY
+	CAST(lpep_pickup_datetime as DATE),
+	passenger_count;
+Q6
+SELECT 
+	zone_lookup."Zone" AS dropoff_zone, MAX(green_taxi_data.tip_amount) AS max_tip
+FROM 
+	green_taxi_data
+JOIN 
+	zone_lookup 
+		ON 
+	green_taxi_data."DOLocationID" = zone_lookup."LocationID"
+WHERE 
+	green_taxi_data."PULocationID" = 
+		(SELECT "LocationID" FROM zone_lookup WHERE "Zone" = 'Astoria')
+GROUP BY 
+	dropoff_zone
+ORDER BY 
+	max_tip DESC
+LIMIT 1;
